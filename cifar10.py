@@ -11,6 +11,9 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
 
+from keras import backend as K
+
+
 import numpy as np
 import resnet
 import tensorflow as tf
@@ -93,8 +96,16 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 #               metrics=['accuracy'])
 
 
+# Wrap with TF optimizer with Keras optimizer, pass learning rate.
+learning_rate = 1e-3
+tf_opt = tf.train.AdadeltaOptimizer(learning_rate)
+
+opt = keras.optimizers.TFOptimizer(tf_opt)
+opt.lr = learning_rate
+
+
 tpu_model.compile(
-    optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
+    optimizer=opt,
     loss=tf.keras.losses.sparse_categorical_crossentropy,
     metrics=['sparse_categorical_accuracy']
 )
