@@ -43,13 +43,13 @@ flags.DEFINE_integer("batch_size", 128,
                      "Mini-batch size for the computation. Note that this "
                      "is the global batch size and not the per-shard batch.")
 flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
-flags.DEFINE_string("train_file", "/home/jannik/Desktop/keras-resnet/train.tfrecords", "Path to cifar10 training data.")
+flags.DEFINE_string("train_file", "/content/cifar-10-data/train.tfrecords", "Path to cifar10 training data.")
 flags.DEFINE_integer("train_steps", 100000,
                      "Total number of steps. Note that the actual number of "
                      "steps is the next multiple of --iterations greater "
                      "than this value.")
 flags.DEFINE_bool("use_tpu", True, "Use TPUs rather than plain CPUs")
-flags.DEFINE_string("model_dir", None, "Estimator model_dir")
+flags.DEFINE_string("model_dir", '/content/model-dir', "Estimator model_dir")
 flags.DEFINE_integer("iterations_per_loop", 100,
                      "Number of iterations per TPU training loop.")
 flags.DEFINE_integer("num_shards", 8, "Number of shards (TPU chips).")
@@ -146,11 +146,6 @@ def input_fn(params):
 
 def main(argv):
   del argv  # Unused.
-
-  #tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
-  #    FLAGS.tpu,
-  #    zone=FLAGS.tpu_zone,
-  #    project=FLAGS.gcp_project)
 
   if FLAGS.use_tpu:
     print("resolving tpu cluster")

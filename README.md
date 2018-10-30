@@ -2,7 +2,6 @@
 
 # Desired features of ipynp:
 
-- tensorboard visualization
 - use ResNet model function
 - use json params for resnet
 - clone code from github
@@ -14,5 +13,7 @@
 - test TPU processing
 - add travis stuff
 
+
 # implemented features:
 
+- tensorboard visualization
