@@ -47,6 +47,8 @@ architecture achieves ~92% accuracy (see [gist](https://gist.github.com/JefferyR
 --------
 
 # Desired features of ipynp:
+
 - tensorboard visualization
-- TPU processing
-- 
+- TPU processing (done)
+- use ResNet model function
+- use json params for resnet
