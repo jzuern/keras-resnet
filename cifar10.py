@@ -51,11 +51,11 @@ X_test /= 128.
 
 # model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
-# (x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
-#
-# # add empty color dimension
-# x_train = np.expand_dims(x_train, -1)
-# x_test = np.expand_dims(x_test, -1)
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
+
+# add empty color dimension
+x_train = np.expand_dims(x_train, -1)
+x_test = np.expand_dims(x_test, -1)
 
 model = tf.keras.models.Sequential()
 model.add(tf.keras.layers.BatchNormalization(input_shape=X_train.shape[1:]))
