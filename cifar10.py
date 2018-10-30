@@ -94,15 +94,15 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 #               metrics=['accuracy'])
 
 
-# Wrap with TF optimizer with Keras optimizer, pass learning rate.
-learning_rate = 1e-3
-tf_opt = tf.train.AdadeltaOptimizer(learning_rate)
-
-opt = keras.optimizers.TFOptimizer(tf_opt)
-opt.lr = learning_rate
+# # Wrap with TF optimizer with Keras optimizer, pass learning rate.
+# learning_rate = 1e-3
+# tf_opt = tf.train.AdamOptimizer(learning_rate)
+#
+# opt = keras.optimizers.TFOptimizer(tf_opt)
+# opt.lr = learning_rate
 
 tpu_model.compile(
-    optimizer=opt,
+    optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
     loss=tf.keras.losses.sparse_categorical_crossentropy,
     metrics=['sparse_categorical_accuracy']
 )
