@@ -50,6 +50,12 @@ X_test /= 128.
 
 # model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
+# (x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
+#
+# # add empty color dimension
+# x_train = np.expand_dims(x_train, -1)
+# x_test = np.expand_dims(x_test, -1)
+
 model = tf.keras.models.Sequential()
 model.add(tf.keras.layers.BatchNormalization(input_shape=X_train.shape[1:]))
 model.add(tf.keras.layers.Conv2D(64, (5, 5), padding='same', activation='elu'))
@@ -142,9 +148,9 @@ else:
     #                     epochs=nb_epoch, verbose=1, max_q_size=100,
     #                     callbacks=[lr_reducer, early_stopper, csv_logger])
 
-    tpu_model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size),
+    tpu_model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                         steps_per_epoch=X_train.shape[0] // batch_size,
-                        validation_data=(X_test, Y_test),
+                        validation_data=(X_test, y_test),
                         epochs=nb_epoch,
                         verbose=1,
                         callbacks=[lr_reducer, early_stopper, csv_logger])
