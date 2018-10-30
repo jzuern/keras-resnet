@@ -43,12 +43,12 @@ flags.DEFINE_integer("batch_size", 128,
                      "Mini-batch size for the computation. Note that this "
                      "is the global batch size and not the per-shard batch.")
 flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
-flags.DEFINE_string("train_file", "/content/cifar-10-data/train.tfrecords", "Path to cifar10 training data.")
+flags.DEFINE_string("train_file", "/home/jannik/Desktop/keras-resnet/train.tfrecords", "Path to cifar10 training data.")
 flags.DEFINE_integer("train_steps", 100000,
                      "Total number of steps. Note that the actual number of "
                      "steps is the next multiple of --iterations greater "
                      "than this value.")
-flags.DEFINE_bool("use_tpu", False, "Use TPUs rather than plain CPUs")
+flags.DEFINE_bool("use_tpu", True, "Use TPUs rather than plain CPUs")
 flags.DEFINE_string("model_dir", None, "Estimator model_dir")
 flags.DEFINE_integer("iterations_per_loop", 100,
                      "Number of iterations per TPU training loop.")
@@ -60,52 +60,62 @@ FLAGS = flags.FLAGS
 
 def model_fn(features, labels, mode, params):
 
-  """Define a CIFAR model in Keras."""
-  del params  # unused
-  layers = tf.contrib.keras.layers
+    """Define a CIFAR model in Keras."""
+    del params  # unused
+    layers = tf.contrib.keras.layers
 
-  # Pass our input tensor to initialize the Keras input layer.
-  v = layers.Input(tensor=features)
-  v = layers.Conv2D(filters=32, kernel_size=5,
+    # Pass our input tensor to initialize the Keras input layer.
+    v = layers.Input(tensor=features)
+    v = layers.Conv2D(filters=32, kernel_size=5,
                     activation="relu", padding="same")(v)
-  v = layers.MaxPool2D(pool_size=2)(v)
-  v = layers.Conv2D(filters=64, kernel_size=5,
+    v = layers.MaxPool2D(pool_size=2)(v)
+    v = layers.Conv2D(filters=64, kernel_size=5,
                     activation="relu", padding="same")(v)
-  v = layers.MaxPool2D(pool_size=2)(v)
-  v = layers.Flatten()(v)
-  fc1 = layers.Dense(units=512, activation="relu")(v)
-  logits = layers.Dense(units=10)(fc1)
+    v = layers.MaxPool2D(pool_size=2)(v)
+    v = layers.Flatten()(v)
+    fc1 = layers.Dense(units=512, activation="relu")(v)
+    logits = layers.Dense(units=10)(fc1)
 
 
-  # Instead of constructing a Keras model for training, build our loss function
-  # and optimizer in Tensorflow.
-  #
-  # N.B.  This construction omits some features that are important for more
-  # complex models (e.g. regularization, batch-norm).  Once
-  # `model_to_estimator` support is added for TPUs, it should be used instead.
-  loss = tf.reduce_mean(
-      tf.nn.sparse_softmax_cross_entropy_with_logits(
-          logits=logits, labels=labels
-      )
-  )
+    # Instead of constructing a Keras model for training, build our loss function
+    # and optimizer in Tensorflow.
+    #
+    # N.B.  This construction omits some features that are important for more
+    # complex models (e.g. regularization, batch-norm).  Once
+    # `model_to_estimator` support is added for TPUs, it should be used instead.
 
-  optimizer = tf.train.AdamOptimizer()
-  if FLAGS.use_tpu:
-    optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
+    loss = tf.reduce_mean(
+        tf.nn.sparse_softmax_cross_entropy_with_logits(
+            logits=logits, labels=labels
+        )
+    )
 
-  train_op = optimizer.minimize(loss, global_step=tf.train.get_global_step())
+    optimizer = tf.train.AdamOptimizer()
+    if FLAGS.use_tpu:
+        optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
 
-  return tf.contrib.tpu.TPUEstimatorSpec(
-      mode=mode,
-      loss=loss,
-      train_op=train_op,
-      predictions={
-          "classes": tf.argmax(input=logits, axis=1),
-          "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
-      }
-  )
+    train_op = optimizer.minimize(loss, global_step=tf.train.get_global_step())
+
+    if FLAGS.use_tpu:
+        return tf.contrib.tpu.TPUEstimatorSpec(
+            mode=mode,
+            loss=loss,
+            train_op=train_op,
+            predictions={
+                "classes": tf.argmax(input=logits, axis=1),
+                "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
+            }
+        )
   
-
+    return tf.estimator.EstimatorSpec(
+        mode=mode,
+        loss=loss,
+        train_op=train_op,
+        predictions={
+            "classes": tf.argmax(input=logits, axis=1),
+            "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
+        }
+    )
 
 def input_fn(params):
   """Read CIFAR input data from a TFRecord dataset."""
@@ -174,7 +184,7 @@ def main(argv):
       config=run_config)
 
 
-  print("training eximator")
+  print("training estimator")
   estimator.train(input_fn=input_fn, max_steps=FLAGS.train_steps)
 
 
