@@ -10,9 +10,7 @@ from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
 from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping
-
-from keras import backend as K
-
+import keras.optimizers
 
 import numpy as np
 import resnet
@@ -102,7 +100,6 @@ tf_opt = tf.train.AdadeltaOptimizer(learning_rate)
 
 opt = keras.optimizers.TFOptimizer(tf_opt)
 opt.lr = learning_rate
-
 
 tpu_model.compile(
     optimizer=opt,
