@@ -156,9 +156,9 @@ else:
     #                     epochs=nb_epoch, verbose=1, max_q_size=100,
     #                     callbacks=[lr_reducer, early_stopper, csv_logger])
 
-    tpu_model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
-                        steps_per_epoch=X_train.shape[0] // batch_size,
-                        validation_data=(X_test, y_test),
+    tpu_model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size),
+                        steps_per_epoch=x_train.shape[0] // batch_size,
+                        validation_data=(x_test, y_test),
                         epochs=nb_epoch,
                         verbose=1,
                         callbacks=[early_stopper, csv_logger])
