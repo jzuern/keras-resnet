@@ -51,17 +51,17 @@ X_test /= 128.
 # model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
 model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.BatchNormalization(input_shape=x_train.shape[1:]))
+model.add(tf.keras.layers.BatchNormalization(input_shape=X_train.shape[1:]))
 model.add(tf.keras.layers.Conv2D(64, (5, 5), padding='same', activation='elu'))
 model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2,2)))
 model.add(tf.keras.layers.Dropout(0.25))
 
-model.add(tf.keras.layers.BatchNormalization(input_shape=x_train.shape[1:]))
+model.add(tf.keras.layers.BatchNormalization(input_shape=X_train.shape[1:]))
 model.add(tf.keras.layers.Conv2D(128, (5, 5), padding='same', activation='elu'))
 model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
 model.add(tf.keras.layers.Dropout(0.25))
 
-model.add(tf.keras.layers.BatchNormalization(input_shape=x_train.shape[1:]))
+model.add(tf.keras.layers.BatchNormalization(input_shape=X_train.shape[1:]))
 model.add(tf.keras.layers.Conv2D(256, (5, 5), padding='same', activation='elu'))
 model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2,2)))
 model.add(tf.keras.layers.Dropout(0.25))
