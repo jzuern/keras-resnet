@@ -102,7 +102,7 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 # opt.lr = learning_rate
 
 tpu_model.compile(
-    optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
+    optimizer='adam',
     loss=tf.keras.losses.sparse_categorical_crossentropy,
     metrics=['sparse_categorical_accuracy']
 )
