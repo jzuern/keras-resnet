@@ -51,7 +51,7 @@ X_test /= 128.
 
 # model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
-(x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
+#(x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
 
 # add empty color dimension
 x_train = np.expand_dims(x_train, -1)
@@ -94,24 +94,13 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 #               metrics=['accuracy'])
 
 
-# # Wrap with TF optimizer with Keras optimizer, pass learning rate.
-# learning_rate = 1e-3
-# tf_opt = tf.train.AdamOptimizer(learning_rate)
-#
-# opt = keras.optimizers.TFOptimizer(tf_opt)
-# opt.lr = learning_rate
-
-# tpu_model.compile(
-#     optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
-#     loss=tf.keras.losses.sparse_categorical_crossentropy,
-#     metrics=['sparse_categorical_accuracy']
-# )
-
 tpu_model.compile(
     optimizer='adam',
     loss=tf.keras.losses.sparse_categorical_crossentropy,
     metrics=['accuracy']
 )
+
+data_augmentation = False
 
 if not data_augmentation:
     print('Not using data augmentation.')
