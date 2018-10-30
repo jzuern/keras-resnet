@@ -63,16 +63,21 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 #               metrics=['accuracy'])
 
 
+# tpu_model.compile(
+#     optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
+#     loss=tf.keras.losses.sparse_categorical_crossentropy,
+#     metrics=['sparse_categorical_accuracy']
+# )
+
 tpu_model.compile(
-    optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
-    loss=tf.keras.losses.sparse_categorical_crossentropy,
-    metrics=['sparse_categorical_accuracy']
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
 )
-
-
 
 if not data_augmentation:
     print('Not using data augmentation.')
+
     tpu_model.fit(X_train, Y_train,
               batch_size=batch_size,
               nb_epoch=nb_epoch,

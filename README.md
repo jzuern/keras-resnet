@@ -49,3 +49,4 @@ architecture achieves ~92% accuracy (see [gist](https://gist.github.com/JefferyR
 # Desired features of ipynp:
 - tensorboard visualization
 - TPU processing
+- 
