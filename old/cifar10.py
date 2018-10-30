@@ -51,7 +51,8 @@ X_test /= 128.
 
 model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
 
-if True:
+use_seq = False
+if use_seq:
 	model = tf.keras.models.Sequential()
 	model.add(tf.keras.layers.BatchNormalization(input_shape=X_train.shape[1:]))
 	model.add(tf.keras.layers.Conv2D(64, (5, 5), padding='same', activation='elu'))
@@ -76,6 +77,9 @@ if True:
 	model.add(tf.keras.layers.Activation('softmax'))
 	model.summary()
 
+
+
+
 tpu_model = tf.contrib.tpu.keras_to_tpu_model(
     model,
     strategy=tf.contrib.tpu.TPUDistributionStrategy(
@@ -89,7 +93,7 @@ tpu_model.compile(
     metrics=['accuracy']
 )
 
-data_augmentation = True
+data_augmentation = False
 
 if not data_augmentation:
     print('Not using data augmentation.')
