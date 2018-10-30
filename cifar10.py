@@ -48,7 +48,31 @@ X_test -= mean_image
 X_train /= 128.
 X_test /= 128.
 
-model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
+# model = resnet.ResnetBuilder.build_resnet_18((img_channels, img_rows, img_cols), nb_classes)
+
+model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.BatchNormalization(input_shape=x_train.shape[1:]))
+model.add(tf.keras.layers.Conv2D(64, (5, 5), padding='same', activation='elu'))
+model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2,2)))
+model.add(tf.keras.layers.Dropout(0.25))
+
+model.add(tf.keras.layers.BatchNormalization(input_shape=x_train.shape[1:]))
+model.add(tf.keras.layers.Conv2D(128, (5, 5), padding='same', activation='elu'))
+model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+model.add(tf.keras.layers.Dropout(0.25))
+
+model.add(tf.keras.layers.BatchNormalization(input_shape=x_train.shape[1:]))
+model.add(tf.keras.layers.Conv2D(256, (5, 5), padding='same', activation='elu'))
+model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2,2)))
+model.add(tf.keras.layers.Dropout(0.25))
+
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(256))
+model.add(tf.keras.layers.Activation('elu'))
+model.add(tf.keras.layers.Dropout(0.5))
+model.add(tf.keras.layers.Dense(10))
+model.add(tf.keras.layers.Activation('softmax'))
+model.summary()
 
 tpu_model = tf.contrib.tpu.keras_to_tpu_model(
     model,
@@ -63,17 +87,17 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 #               metrics=['accuracy'])
 
 
-# tpu_model.compile(
-#     optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
-#     loss=tf.keras.losses.sparse_categorical_crossentropy,
-#     metrics=['sparse_categorical_accuracy']
-# )
-
 tpu_model.compile(
-    optimizer='adam',
-    loss='categorical_crossentropy',
-    metrics=['accuracy']
+    optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
+    loss=tf.keras.losses.sparse_categorical_crossentropy,
+    metrics=['sparse_categorical_accuracy']
 )
+
+# tpu_model.compile(
+#     optimizer='adam',
+#     loss='categorical_crossentropy',
+#     metrics=['accuracy']
+# )
 
 if not data_augmentation:
     print('Not using data augmentation.')
