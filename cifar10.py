@@ -102,7 +102,7 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 # opt.lr = learning_rate
 
 tpu_model.compile(
-    optimizer='adam',
+    optimizer=tf.train.AdamOptimizer(learning_rate=1e-3, ),
     loss=tf.keras.losses.sparse_categorical_crossentropy,
     metrics=['sparse_categorical_accuracy']
 )
@@ -121,7 +121,7 @@ if not data_augmentation:
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
               shuffle=True,
-              callbacks=[lr_reducer, early_stopper, csv_logger])
+              callbacks=[early_stopper, csv_logger])
 
     # model.fit(X_train, Y_train,
     #           batch_size=batch_size,
