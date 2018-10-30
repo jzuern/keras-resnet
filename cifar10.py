@@ -109,7 +109,7 @@ tpu_model = tf.contrib.tpu.keras_to_tpu_model(
 
 tpu_model.compile(
     optimizer='adam',
-    loss='categorical_crossentropy',
+    loss=tf.keras.losses.sparse_categorical_crossentropy,
     metrics=['accuracy']
 )
 
@@ -161,4 +161,4 @@ else:
                         validation_data=(X_test, y_test),
                         epochs=nb_epoch,
                         verbose=1,
-                        callbacks=[lr_reducer, early_stopper, csv_logger])
+                        callbacks=[early_stopper, csv_logger])
